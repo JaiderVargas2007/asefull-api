@@ -7,8 +7,8 @@ let modoClic = false;
 
 // ---------- Mapa ----------
 const mapa = L.map('mapa').setView([4.6125, -74.192], 14);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap · © CARTO',
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 19, attribution: 'Mapa © Esri · datos © OpenStreetMap',
 }).addTo(mapa);
 const capa = L.layerGroup().addTo(mapa);
 const capaLinea = L.layerGroup().addTo(mapa);
