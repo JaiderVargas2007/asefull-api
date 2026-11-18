@@ -7,7 +7,9 @@ let modoClic = false;
 
 // ---------- Mapa ----------
 const mapa = L.map('mapa').setView([4.6125, -74.192], 14);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(mapa);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19, subdomains: 'abcd', attribution: '© OpenStreetMap · © CARTO',
+}).addTo(mapa);
 const capa = L.layerGroup().addTo(mapa);
 const capaLinea = L.layerGroup().addTo(mapa);
 
