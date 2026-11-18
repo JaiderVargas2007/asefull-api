@@ -1,0 +1,529 @@
+{
+  "info": {
+    "name": "ASEFULL API (Express + JWT)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Primero ejecuta \"1. Login\": guarda el JWT en la variable token y las demás peticiones lo mandan solas (Authorization: Bearer)."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "email",
+      "value": "jefe@asefull.demo"
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "id_ruta",
+      "value": "6"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "0. Salud de la API",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/salud",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "salud"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1. Login (guarda el token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "pm.test('Login correcto (200)', () => pm.response.to.have.status(200));",
+                  "if (r.token) pm.collectionVariables.set('token', r.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Sin token -> 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/mapa",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "mapa"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Quién soy (token)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/yo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "yo"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mapa de la ruta",
+      "item": [
+        {
+          "name": "Mapa: clientes con coordenadas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/mapa",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "mapa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Geocodificar direcciones (lote)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/geocodificar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "geocodificar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"max\": 6,\n  \"reintentar\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Camino por calles (OSRM)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/calles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "calles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"puntos\": [\n    [\n      4.6182,\n      -74.1898\n    ],\n    [\n      4.6131,\n      -74.188\n    ],\n    [\n      4.6062,\n      -74.1921\n    ]\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Optimizar orden (solo ver)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/optimizar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "optimizar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"guardar\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Optimizar orden y guardar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/optimizar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "optimizar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"guardar\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Deshacer: volver al orden anterior",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/restaurar-orden",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "restaurar-orden"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fijar bodega (solo jefe)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/bodega",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "bodega"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 4.623,\n  \"lng\": -74.183\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ubicación de clientes",
+      "item": [
+        {
+          "name": "Fijar ubicación con GPS / pin",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/ubicacion",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "ubicacion"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_clientes\": [\n    111\n  ],\n  \"lat\": 4.625,\n  \"lng\": -74.201,\n  \"fuente\": \"gps\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Ubicación desde enlace Google/Waze",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/ubicacion/enlace",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "ubicacion",
+                "enlace"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enlace\": \"https://www.google.com/maps/@4.6050,-74.1950,17z\",\n  \"id_clientes\": [\n    112\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Cambiar dirección y reubicar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/112/direccion",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "112",
+                "direccion"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direccion\": \"Carrera 86 # 60-25 Sur, Bosa\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Probar una dirección (no guarda)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/geocodificar?direccion=Calle 59 Sur %23 80J-10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "geocodificar"
+              ],
+              "query": [
+                {
+                  "key": "direccion",
+                  "value": "Calle 59 Sur %23 80J-10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Salida del vendedor",
+      "item": [
+        {
+          "name": "Registrar visita",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/visitas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "visitas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_cliente\": 102,\n  \"estado\": \"venta\",\n  \"lat\": 4.6132,\n  \"lng\": -74.1881\n}"
+            }
+          }
+        },
+        {
+          "name": "Resumen de la salida",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rutas/{{id_ruta}}/resumen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rutas",
+                "{{id_ruta}}",
+                "resumen"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Estadísticas de la API (solo jefe)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/estadisticas?dias=7",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "estadisticas"
+              ],
+              "query": [
+                {
+                  "key": "dias",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

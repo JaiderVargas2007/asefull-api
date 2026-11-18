@@ -1,0 +1,27 @@
+# Despliegue en Render (plan gratis) usando el Dockerfile
+# Render > New > Blueprint > conectar el repositorio. Los valores sync:false se llenan en el panel.
+services:
+  - type: web
+    name: asefull-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/salud
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false

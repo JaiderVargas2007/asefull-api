@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASEFULL Rutas · Demo API</title>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="/demo.css">
+</head>
+<body>
+<header>
+  <div class="marca">ASEFULL <span>Rutas</span></div>
+  <div class="sub">Demo de la API · Express.js + JWT + Docker</div>
+  <div id="sesion" class="sesion">Sin sesión</div>
+</header>
+
+<main>
+  <aside>
+    <section>
+      <h2><b>1</b> Iniciar sesión (JWT)</h2>
+      <form id="fLogin">
+        <input id="email" type="email" placeholder="Correo" value="jefe@asefull.demo" autocomplete="username">
+        <input id="clave" type="password" placeholder="Contraseña" autocomplete="current-password">
+        <button type="submit">Entrar</button>
+      </form>
+      <div class="fila">
+        <button class="sec" id="bSinToken">Probar sin token</button>
+        <button class="sec" id="bTokenFalso">Probar token falso</button>
+        <button class="sec" id="bSalir">Salir</button>
+      </div>
+      <div id="token" class="token oculto"></div>
+    </section>
+
+    <section>
+      <h2><b>2</b> Ruta en el mapa</h2>
+      <div class="fila">
+        <label>Ruta <input id="idRuta" type="number" value="6" min="1"></label>
+        <button id="bMapa">Ver mapa</button>
+        <button class="sec" id="bGeo">Ubicar direcciones</button>
+      </div>
+      <div id="info" class="info"></div>
+    </section>
+
+    <section>
+      <h2><b>3</b> Ordenar la ruta</h2>
+      <div class="fila">
+        <button id="bOpt">Optimizar (vista previa)</button>
+        <button class="sec" id="bGuardar">Guardar orden</button>
+        <button class="sec" id="bDeshacer">Deshacer</button>
+        <button class="sec" id="bCalles">Camino por calles</button>
+      </div>
+      <div id="km" class="km oculto"></div>
+    </section>
+
+    <section>
+      <h2><b>4</b> Corregir ubicación de un cliente</h2>
+      <select id="cliente"><option value="">Primero carga el mapa</option></select>
+      <input id="enlace" placeholder="Pega el enlace de Google Maps o Waze">
+      <div class="fila">
+        <button id="bEnlace">Ubicar con enlace</button>
+        <button class="sec" id="bClicMapa">Mover con clic en el mapa</button>
+      </div>
+      <div class="fila">
+        <input id="direccion" placeholder="Nueva dirección (ej. Calle 59 Sur # 80J-10)">
+        <button class="sec" id="bDir">Cambiar dirección</button>
+      </div>
+    </section>
+
+    <section>
+      <h2><b>5</b> Salida del vendedor</h2>
+      <div class="fila">
+        <button class="sec" id="bVisita">Registrar visita (venta)</button>
+        <button class="sec" id="bResumen">Resumen</button>
+        <button class="sec" id="bStats">Estadísticas (jefe)</button>
+      </div>
+    </section>
+  </aside>
+
+  <div class="derecha">
+    <div id="mapa"></div>
+    <div class="peticion">
+      <div class="titulo">Última petición a la API</div>
+      <div id="linea" class="linea">—</div>
+      <pre id="json">Inicia sesión para empezar.</pre>
+    </div>
+  </div>
+</main>
+
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/demo.js"></script>
+</body>
+</html>
