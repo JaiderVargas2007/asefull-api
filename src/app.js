@@ -13,9 +13,10 @@ app.disable('x-powered-by');
 app.set('trust proxy', 1);                       // Render pone un proxy delante (IP real para el límite de login)
 
 app.use(helmet({
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },          // los servidores de mapas piden saber de qué sitio viene
   contentSecurityPolicy: {
     directives: {
-      'img-src': ["'self'", 'data:', 'https://*.tile.openstreetmap.org'],   // mapas de OpenStreetMap en la página demo
+      'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org'],   // fondo del mapa en la página demo
       'upgrade-insecure-requests': null,   // permite probar en http://localhost con Docker
     },
   },
