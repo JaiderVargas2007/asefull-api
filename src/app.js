@@ -16,7 +16,7 @@ app.use(helmet({
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },          // los servidores de mapas piden saber de qué sitio viene
   contentSecurityPolicy: {
     directives: {
-      'img-src': ["'self'", 'data:', 'https://*.basemaps.cartocdn.com', 'https://*.tile.openstreetmap.org'],   // fondo del mapa en la página demo
+      'img-src': ["'self'", 'data:', 'https://server.arcgisonline.com', 'https://*.tile.openstreetmap.org'],   // fondo del mapa en la página demo
       'upgrade-insecure-requests': null,   // permite probar en http://localhost con Docker
     },
   },
